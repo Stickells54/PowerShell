@@ -28,6 +28,7 @@ param
 	[parameter(Mandatory = $true)]
 	$ResourceName,
 	[parameter(Mandatory = $true)]
+	[ValidateSet('Application', 'Desktop', 'GlobalApplicationEntitlement', 'GlobalEntitlement','URLRedirection')]
 	$ResourceType,
 	$Users = @(),
 	$UserCSV
