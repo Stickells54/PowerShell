@@ -10,7 +10,7 @@
 	Interactive menu-based certificate management script. You can generate a CSR, multiple CSRs, and manipulate certificates returned from the CSRs.
 
 #>
- param
+param
 (
 	[parameter(Mandatory = $true)]
 	$OU,
@@ -163,7 +163,7 @@ function GenerateBulkCSR
             [Extensions]
             2.5.29.17 = "{text}"
             _continue_ = "dns=$($CSR.SAN1)&"
-                                                _continue_ = "dns=$($CSR.SAN2)"
+            _continue_ = "dns=$($CSR.SAN2)"
             
 "@
 			
