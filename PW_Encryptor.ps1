@@ -10,7 +10,7 @@
 		Example you would add to a script: 
 		$User = 'user'
 		$EncrypedPassword = Get-Content $OutFile | ConvertTo-SecureString
-		$ScriptCred = New-Object System.Management.Automation.PsCredential($User, $EncryptedPassword
+		$ScriptCred = New-Object System.Management.Automation.PsCredential($User, $EncryptedPassword)
 )
 	.PARAMETER Credential
 		Prompts you for the credentials you need to encrypt and export
