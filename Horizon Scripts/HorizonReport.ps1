@@ -8,11 +8,14 @@
 	.DESCRIPTION
 	Creates a detailed report of Horizon KPIs. 
 
-	.Parameter AppVolMGR
+	.Parameter HZCon
 	IP or Hostname of the Horizon Connection Server
 	
 	.Parameter OutputFile
 	Absolute path to the XLSX file that will be generated
+
+	.PARAMETER Cred
+	Credentials used to authenticate in the Connection servers.
 #>
 param
 (
