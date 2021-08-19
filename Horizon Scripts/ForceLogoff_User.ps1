@@ -6,7 +6,7 @@
 	 Filename:     	ForceDisconnectRDSSessions.ps1
 	===========================================================================
 	.DESCRIPTION
-		Force-logoff all RDS sessions for a specific user.
+		Force-logoff specific type of sessions for a specific user.
 	.PARAMETER User
 		UserID of the person we want to force logoff sessions for.
 
@@ -15,6 +15,9 @@
 
 	.PARAMETER ConnectionServer
 		FQDN or VIP of the Horizon Connection Servers
+
+	.PARAMETER DesktopType
+		RDS for RDSH Apps or Desktop for Horizon Deskstop sessions
 #>
 
 param(
@@ -23,7 +26,10 @@ param(
 	[Parameter(Mandatory = $True,)]
 	$FQDN,
 	[Parameter(Mandatory = $True,)]
-	$ConnectionServer
+	$ConnectionServer,
+	[Parameter(Mandatory = $true)]
+	[ValidateSet]("RDS", "Desktop")
+	$DesktopType
 )
 
 $User = $FQDN + '\' + "$USER" #this is the username format that the session block returns
@@ -31,13 +37,16 @@ $HVSVC = Connect-HVServer -Server $ConnectionServer
 $Sessions = Get-HVLocalSession
 $SessionExists = $false #We will check the condition on this variable later to confirm a session was found
 foreach ($Session in $Sessions){
-    if (($Session.NamesData.UserName -eq $User) -and ($Session.NamesData.DesktopType -eq 'RDS')){
+    if (($Session.NamesData.UserName -eq $User) -and ($Session.NamesData.DesktopType -eq $DesktopType)){
         $SessionExists = $True #Changes the condition of the variable once any session matching our parameters are found
-        $ServerName = $Session.NamesData.MachineorRDSServerName
-        $ApplicationNAme = $Session.NamesData.ApplicationNames
-        $UserID = $Session.NamesData.UserName.Split("\")[1] # We are using the username from the session object to verify we have the correct user's session in the output
+		$ServerName = $Session.NamesData.MachineorRDSServerName
+		if ($DesktopType -eq 'RDS')
+		{
+			$ApplicationName = $Session.NamesData.ApplicationNames
+			Write-Host "Application Name: $ApplicationName"
+		}
+		$UserID = $Session.NamesData.UserName.Split("\")[1] # We are using the username from the session object to verify we have the correct user's session in the output
         Write-Host "Disconnecting $UserID from $ServerName.."
-        Write-Host "Application Name: $ApplicationNAme"
            try{
         $HVSVC.ExtensionData.Session.Session_LogoffForced(($session.id))
         Write-Host "Session Force Logged off successfully..."
