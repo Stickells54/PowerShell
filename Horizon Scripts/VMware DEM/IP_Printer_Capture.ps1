@@ -7,11 +7,11 @@
 	===========================================================================
 	.DESCRIPTION
 		VMware DEM does not natively support TCP/IP network printer persistence. Here is the process to make this work:
-		- Create a Logoff script in DEM that runs IP_Printer_Capture.ps1 to capture the user's IP Printers on logoff.
-		- Create a Logon Script in DEM that runs IP_Printer_Mapper.ps1 to then re-map the printer on logon.
+		- Create a Logoff setting in DEM that runs IP_Printer_Capture.ps1 to capture the user's IP Printers on logoff.
+		- Create a Logon setting in DEM that runs IP_Printer_Mapper.ps1 to then re-map the printer on logon.
 
 	.NOTES
-		- You need to have the printer driver you want to use in the base image. 
+		- You need to have the printer driver you want to use in the base image. Easiest way is to add a "test" printer and then add all the drivers you would need on that printer. Remove printer when done.
 		- You should exclude the printer entities that exist in the base image so that only the printers added by users are capture. These are to be added to $ExistingPrinters array below.
 		- Captured printer info is stored in the user's DEM profile directory and then pulled back down on logon via the IP_Printer_Mapper.ps1 script. 
 		- Set the user profile directory to the $DEMUserShare variable. This should match wahtever is set in the GPOs i.e. "\\path\to\usershare\$env:Username" !!! NO TRAILING '\' !!!
