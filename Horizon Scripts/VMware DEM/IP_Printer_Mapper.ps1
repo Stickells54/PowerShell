@@ -7,8 +7,8 @@
 	===========================================================================
 	.DESCRIPTION
 		VMware DEM does not natively support TCP/IP network printer persistence. Here is the process to make this work:
-		- Create a Logoff script in DEM that runs IP_Printer_Capture.ps1 to capture the user's IP Printers on logoff.
-		- Create a Logon Script in DEM that runs IP_Printer_Mapper.ps1 to then re-map the printer on logon.
+		- Create a Logoff setting in DEM that runs IP_Printer_Capture.ps1 to capture the user's IP Printers on logoff.
+		- Create a Logon setting in DEM that runs IP_Printer_Mapper.ps1 to then re-map the printer on logon.
 
 	.NOTES
 		- You need to have the printer driver you want to use in the base image. 
@@ -36,10 +36,17 @@ $PrinterList.IP | % { $PrinterIPs += $_ }
 $PrinterList.Names | % { $PrinterNames += $_ }
 $PrinterList.Drivers | % {$PrinterDriverNames += $_}
 
+$PrinterNames | % {Write-Output "Detected Printer $_ to be added"}
+
 # Loop through the arrays and add the printers
 for ($Printer = 0; $Printer -lt $PrinterNames.Count; $Printer++)
 {
 	Add-PrinterPort -Name $PrinterIPs[$Printer] -PrinterHostAddress $PrinterIPs[$Printer]
+	Write-Output "Added Printer Port: $PrinterIPs[$Printer]"
 	Add-Printer -Name $PrinterNames[$Printer] -PortName $PrinterIPs[$Printer] -DriverName $PrinterDriverNames[$Printer]
+	Write-Output "Printer $PrinterNames[$Printer] added. Port: $PrinterIPs[$Printer] DriverName: $PrinterDriverNames[$Printer]"
 }
 
+Write-Output "All Printers added!"
+
+Exit 0
