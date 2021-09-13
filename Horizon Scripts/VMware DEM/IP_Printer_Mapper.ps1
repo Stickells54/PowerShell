@@ -19,7 +19,7 @@
 #>
 
 $DEMUserShare = "\\path\to\demusershare\$env:Username" # No trailing '\' - Should match the path in IP_Printer_Capture.ps1
-$LogFile = "$DEMUserShare\IP_Printer.log"
+$LogFile = "$DEMUserShare\IP_Printer_Mapper.log"
 
 Start-Transcript -Path $LogFile 
 
