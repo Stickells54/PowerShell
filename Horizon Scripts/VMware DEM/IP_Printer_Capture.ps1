@@ -27,7 +27,7 @@ $NewPrinterDriverNames = @()
 $NewPrinterIP = @()
 
 #Get the Name, DriverName, and PortName (IP for IP based Printers) for all printers that aren't in the existing printers array
-$null = Get-Printer | % { if ($ExistingPrinters -notcontains $_.Name) { [string]$NewPrinterDriverNames += $_.DriverName; [string]$NewPrinterIP += $_.PortName; [string]$NewPrinterNames += $_.Name } }
+$null = Get-Printer | % { if (($ExistingPrinters -notcontains $_.Name) -and ($_.PortName -match '^[0-9]' )) { [string]$NewPrinterDriverNames += $_.DriverName; [string]$NewPrinterIP += $_.PortName; [string]$NewPrinterNames += $_.Name } } 
 
 #Create a PSObject and load all the data into the Object Properties
 $Printers = New-Object -TypeName System.Management.Automation.PSObject
