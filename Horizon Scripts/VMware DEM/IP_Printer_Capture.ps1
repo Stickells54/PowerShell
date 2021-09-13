@@ -20,14 +20,22 @@
 
 $ExistingPrinters = @('Print Anywhere', 'OneNote (Desktop)', 'Microsoft XPS Document Writer', 'Microsoft Print to PDF', 'Fax')
 $DEMUserShare = "\\path\to\demusershare\$env:Username" # No trailing '\'
+$LogFile = "$DEMUserShare\IP_Printer_Capture.log"
+
+Start-Transcript -Path $LogFile
+
 
 #Create empty array for the printer properties we need to save
 $NewPrinterNames = @()
 $NewPrinterDriverNames = @()
 $NewPrinterIP = @()
 
+Write-Output "Capturing Printers..."
 #Get the Name, DriverName, and PortName (IP for IP based Printers) for all printers that aren't in the existing printers array
-$null = Get-Printer | % { if (($ExistingPrinters -notcontains $_.Name) -and ($_.PortName -match '^[0-9]' )) { [string]$NewPrinterDriverNames += $_.DriverName; [string]$NewPrinterIP += $_.PortName; [string]$NewPrinterNames += $_.Name } } 
+$null = Get-Printer | % { if (($ExistingPrinters -notcontains $_.Name) -and ($_.PortName -match '^[0-9]' )) { [string]$NewPrinterDriverNames += $_.DriverName; [string]$NewPrinterIP += $_.PortName; [string]$NewPrinterNames += $_.Name } }
+
+# Log what printers were captured..
+$NewPrinterNames | % {Write-Output "Printer $_ has been captured!"}
 
 #Create a PSObject and load all the data into the Object Properties
 $Printers = New-Object -TypeName System.Management.Automation.PSObject
@@ -36,4 +44,5 @@ $Printers | Add-Member -MemberType NoteProperty -Name IP -Value $NewPrinterIP
 $Printers | Add-Member -MemberType NoteProperty -Name Names -Value $NewPrinterNames
 
 # Export the PSObject and the properties to CSV. We will call this CSV later and collect the information for importing!
+Write-Output "Exporting to captured printer info to $DEMUserShare\IP_Printers.csv !"
 $Printers | Export-Csv -Path "$DEMUserShare\IP_PRINTERS.CSV"

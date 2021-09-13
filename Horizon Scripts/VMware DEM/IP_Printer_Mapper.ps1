@@ -47,6 +47,6 @@ for ($Printer = 0; $Printer -lt $PrinterNames.Count; $Printer++)
 	Write-Output "Printer $PrinterNames[$Printer] added. Port: $PrinterIPs[$Printer] DriverName: $PrinterDriverNames[$Printer]"
 }
 
-Write-Output "All Printers added!"
+Write-Output "Finished Adding Printers!"
 
 Exit 0
