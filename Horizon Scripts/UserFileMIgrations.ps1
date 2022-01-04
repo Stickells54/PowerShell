@@ -58,14 +58,14 @@ $VMs = Get-HVMachineSummary -PoolName $PoolName
 $Machines = @()
 foreach ($VM in $VMs)
 {
-	if ($VM.NamesData.Username -ne $Null) { $Machines += $VM.Base.Name }
+	if ($Null -ne $VM.NamesData.Username) { $Machines += $VM.Base.Name }
 }
 
 $UserArray = $VMs.NamesData.Username
 $Users = @()
 foreach ($User in $UserArray)
 {
-	if ($User -ne $Null)
+	if ($Null -ne $User)
 	{
 		$Split = $User.Split('\')
 		$User = $Split[1]
