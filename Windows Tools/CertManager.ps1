@@ -113,7 +113,7 @@ function GenerateBulkCSR
 	{
 		$Path = "$($CSRSAVELOCATION)\$($CSR.CRTMGT)"
 		New-Item -ItemType Directory -Path $Path -Force
-		if ($CSR.SAN1 -eq $null)
+		if ($null -eq $CSR.SAN1)
 		{
 			$INF =
 			@"
@@ -139,7 +139,7 @@ function GenerateBulkCSR
 			certreq -new $path\inf.inf $Path\CSR.txt
 		}
 		
-		if ($CSR.SAN1 -ne $null)
+		if ($null -ne $CSR.SAN1)
 		{
 			$INF =
 			@"
@@ -187,7 +187,7 @@ function ImportExport
 		New-Item -Path $ExportLocation -ItemType Directory
 		Write-Host "Directory Created since it did not previously exist" -ForegroundColor Green
 	}
-	$Certs = (GCI -Path $CertsLocation | ? Name -Like "*.cer").Name
+	$Certs = (Get-ChildItem -Path $CertsLocation | Where-Object Name -Like "*.cer").Name
 	Write-Host  "Importing Certs..."
 	foreach ($Cert in $Certs)
 	{
@@ -200,7 +200,7 @@ function ImportExport
 	
 	foreach ($Cert in $CertNames)
 	{
-		$CERTTP = (dir Cert:\LocalMachine\My\ -Recurse | ? Subject -Like "*CN=$($Cert)*").Thumbprint | Out-Null ### This finds the certificate in the Personal Directory that has a CN matching that if the CN provided in the CertNames array. This is a foreach loop so it does this for each cert in the array   
+		$CERTTP = (dir Cert:\LocalMachine\My\ -Recurse | Where-Object Subject -Like "*CN=$($Cert)*").Thumbprint | Out-Null ### This finds the certificate in the Personal Directory that has a CN matching that if the CN provided in the CertNames array. This is a foreach loop so it does this for each cert in the array   
 		New-Item -Path $ExportLocation\$Cert -ItemType Directory -Force | Out-Null ## Create a folder in the directory provided with the CN of each cert. This is where the PFX files will be stored.
 		Get-ChildItem -Path Cert:\LocalMachine\my\$($CERTTP) | Export-PfxCertificate -Password $PFXPWDENCRYPT -FilePath $ExportLocation\$Cert\$Cert.pfx | Out-Null ## Export the cert we installed earlier in the function to a PFX with the password given by the user
 	}
