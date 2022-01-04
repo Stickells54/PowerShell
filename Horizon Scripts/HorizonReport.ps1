@@ -22,7 +22,7 @@ param
 	[parameter(Mandatory = $true)]
 	$HZCon,
 	$OutputFile = "C:\Temp\HorizonReport.xlsx",
-	$Cred = (Get-Credential),
+	$Cred = (Get-Credential)
 )
 
 ## Horizon Reporting Script
