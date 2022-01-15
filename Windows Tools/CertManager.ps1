@@ -37,6 +37,7 @@ function Show-Menu
 	Write-Host "2: Press '2' to bulk generate CSR from CSV file. (must use template)"
 	Write-Host "3: Press '3' to generate a PFX, PEM, CER, and Key from your CER file"
 	Write-Host "4: Press '4' to download a CSV template for bulk importing"
+	Write-Host "5: Press '5' to download OpenSSL"
 	Write-Host "Q: Press 'Q' to quit"
 }
 
@@ -220,6 +221,20 @@ function ImportExport
 	}
 }
 
+function Download-OpenSSL
+{
+	if (!(Test-Path C:\OpenSSl)){
+		Write-Host "Creating C:\OpenSSL"
+		New-Item -Path C:\OpenSSL -ItemType Directory -Confirm:$false
+		Write-Host "Folder Created"
+	}
+
+	Write-Host "Downloading OpenSSL..."
+	Invoke-WebRequest -Uri "https://indy.fulgan.com/SSL/openssl-1.0.2q-x64_86-win64.zip" -OutFile "C:\openssl\openssl.zip"
+	Write-Host "OpenSSL Downloaded. Extracting Now..."
+	Expand-Archive -LiteralPath "C:\OpenSSL\OpenSSL.zip" -DestinationPath "C:\OpenSSL" -
+}
+
 do
 {
 	Show-Menu
@@ -234,6 +249,9 @@ do
 			ImportExport
 		} '4' {
 			DownloadCSRTemplate
+		}
+		'5'{
+			Download-OpenSSL
 		}
 	}
 	pause
