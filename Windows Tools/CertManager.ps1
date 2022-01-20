@@ -232,7 +232,7 @@ function Download-OpenSSL
 	Write-Host "Downloading OpenSSL..."
 	Invoke-WebRequest -Uri "https://indy.fulgan.com/SSL/openssl-1.0.2q-x64_86-win64.zip" -OutFile "C:\openssl\openssl.zip"
 	Write-Host "OpenSSL Downloaded. Extracting Now..."
-	Expand-Archive -LiteralPath "C:\OpenSSL\OpenSSL.zip" -DestinationPath "C:\OpenSSL" -
+	Expand-Archive -LiteralPath "C:\OpenSSL\OpenSSL.zip" -DestinationPath "C:\OpenSSL" -Confirm:$false
 }
 
 do
