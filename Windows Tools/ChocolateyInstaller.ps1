@@ -1,3 +1,23 @@
+<#	
+	.NOTES
+	===========================================================================
+	 Created on:   	12/15/20
+	 Created by:   	Travis Stickells
+	 Filename:     	ChocolateyInstaller.ps1
+	===========================================================================
+	.DESCRIPTION
+	Installs chocolatey on multiple systems at once. 
+
+    .PARAMETER ComputerList
+        Array of windows servers or workstations that you want to install Chocolatey on
+
+    .PARAMETER Creds
+        Credentials that have admin rights on the remote systems
+    
+    .PARAMETER LogLocation
+        Absolute path to log file. 
+#>
+
 param (
     [Parameter (Mandatory = $true)]
     $ComputerList = @(),
