@@ -37,6 +37,7 @@ function Show-Menu
 	Write-Host "2: Press '2' to bulk generate CSR from CSV file. (must use template)"
 	Write-Host "3: Press '3' to generate a PFX, PEM, CER, and Key from your CER file"
 	Write-Host "4: Press '4' to download a CSV template for bulk importing"
+	Write-Host "5: Press '5' to download OpenSSL"
 	Write-Host "Q: Press 'Q' to quit"
 }
 
@@ -113,7 +114,7 @@ function GenerateBulkCSR
 	{
 		$Path = "$($CSRSAVELOCATION)\$($CSR.CRTMGT)"
 		New-Item -ItemType Directory -Path $Path -Force
-		if ($CSR.SAN1 -eq $null)
+		if ($null -eq $CSR.SAN1)
 		{
 			$INF =
 			@"
@@ -139,7 +140,7 @@ function GenerateBulkCSR
 			certreq -new $path\inf.inf $Path\CSR.txt
 		}
 		
-		if ($CSR.SAN1 -ne $null)
+		if ($null -ne $CSR.SAN1)
 		{
 			$INF =
 			@"
@@ -187,7 +188,7 @@ function ImportExport
 		New-Item -Path $ExportLocation -ItemType Directory
 		Write-Host "Directory Created since it did not previously exist" -ForegroundColor Green
 	}
-	$Certs = (GCI -Path $CertsLocation | ? Name -Like "*.cer").Name
+	$Certs = (Get-ChildItem -Path $CertsLocation | Where-Object Name -Like "*.cer").Name
 	Write-Host  "Importing Certs..."
 	foreach ($Cert in $Certs)
 	{
@@ -200,7 +201,7 @@ function ImportExport
 	
 	foreach ($Cert in $CertNames)
 	{
-		$CERTTP = (dir Cert:\LocalMachine\My\ -Recurse | ? Subject -Like "*CN=$($Cert)*").Thumbprint | Out-Null ### This finds the certificate in the Personal Directory that has a CN matching that if the CN provided in the CertNames array. This is a foreach loop so it does this for each cert in the array   
+		$CERTTP = (dir Cert:\LocalMachine\My\ -Recurse | Where-Object Subject -Like "*CN=$($Cert)*").Thumbprint | Out-Null ### This finds the certificate in the Personal Directory that has a CN matching that if the CN provided in the CertNames array. This is a foreach loop so it does this for each cert in the array   
 		New-Item -Path $ExportLocation\$Cert -ItemType Directory -Force | Out-Null ## Create a folder in the directory provided with the CN of each cert. This is where the PFX files will be stored.
 		Get-ChildItem -Path Cert:\LocalMachine\my\$($CERTTP) | Export-PfxCertificate -Password $PFXPWDENCRYPT -FilePath $ExportLocation\$Cert\$Cert.pfx | Out-Null ## Export the cert we installed earlier in the function to a PFX with the password given by the user
 	}
@@ -220,6 +221,20 @@ function ImportExport
 	}
 }
 
+function Download-OpenSSL
+{
+	if (!(Test-Path C:\OpenSSl)){
+		Write-Host "Creating C:\OpenSSL"
+		New-Item -Path C:\OpenSSL -ItemType Directory -Confirm:$false
+		Write-Host "Folder Created"
+	}
+
+	Write-Host "Downloading OpenSSL..."
+	Invoke-WebRequest -Uri "https://indy.fulgan.com/SSL/openssl-1.0.2q-x64_86-win64.zip" -OutFile "C:\openssl\openssl.zip"
+	Write-Host "OpenSSL Downloaded. Extracting Now..."
+	Expand-Archive -LiteralPath "C:\OpenSSL\OpenSSL.zip" -DestinationPath "C:\OpenSSL" -Confirm:$false
+}
+
 do
 {
 	Show-Menu
@@ -234,6 +249,9 @@ do
 			ImportExport
 		} '4' {
 			DownloadCSRTemplate
+		}
+		'5'{
+			Download-OpenSSL
 		}
 	}
 	pause
