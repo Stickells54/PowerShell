@@ -55,21 +55,21 @@ Import-Module VMware.VimAutomation.HorizonView
 ##########################################
 Connect-HVServer -Server $CONSERV -Domain $Domain -User $HZAdmin -Password $HZPass
 $VMs = Get-HVMachineSummary -PoolName $PoolName
-$Machines = @()
+$Machines = New-Object System.Collections.ArrayList
 foreach ($VM in $VMs)
 {
-	if ($Null -ne $VM.NamesData.Username) { $Machines += $VM.Base.Name }
+	if ($Null -ne $VM.NamesData.Username) { $Machines.Add($VM.Base.Name) }
 }
 
 $UserArray = $VMs.NamesData.Username
-$Users = @()
+$Users = New-Object System.Collections.ArrayList
 foreach ($User in $UserArray)
 {
 	if ($Null -ne $User)
 	{
 		$Split = $User.Split('\')
 		$User = $Split[1]
-		$Users += $User
+		$Users.Add($User)
 	}
 }
 

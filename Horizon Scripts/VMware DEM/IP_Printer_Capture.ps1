@@ -26,13 +26,13 @@ Start-Transcript -Path $LogFile
 
 
 #Create empty array for the printer properties we need to save
-$NewPrinterNames = @()
-$NewPrinterDriverNames = @()
-$NewPrinterIP = @()
+$NewPrinterNames = New-Object System.Collections.ArrayList
+$NewPrinterDriverNames = New-Object System.Collections.ArrayList
+$NewPrinterIP = New-Object System.Collections.ArrayList
 
 Write-Output "Capturing Printers..."
 #Get the Name, DriverName, and PortName (IP for IP based Printers) for all printers that aren't in the existing printers array
-$null = Get-Printer | % { if (($ExistingPrinters -notcontains $_.Name) -and ($_.PortName -match '^[0-9]' )) { [string]$NewPrinterDriverNames += $_.DriverName; [string]$NewPrinterIP += $_.PortName; [string]$NewPrinterNames += $_.Name } }
+$null = Get-Printer | % { if (($ExistingPrinters -notcontains $_.Name) -and ($_.PortName -match '^[0-9]' )) { [string]$NewPrinterDriverNames.Add($_.DriverName); [string]$NewPrinterIP.Add($_.PortName); [string]$NewPrinterNames.Add($_.Name )} }
 
 # Log what printers were captured..
 $NewPrinterNames | % {Write-Output "Printer $_ has been captured!"}

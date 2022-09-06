@@ -24,17 +24,17 @@ $LogFile = "$DEMUserShare\IP_Printer_Mapper.log"
 Start-Transcript -Path $LogFile 
 
 # Create empty arrays for the data we need
-$PrinterIPs = @()
-$PrinterNames = @()
-$PrinterDriverNames =@()
+$PrinterIPs = New-Object System.Collections.ArrayList
+$PrinterNames = New-Object System.Collections.ArrayList
+$PrinterDriverNames =New-Object System.Collections.ArrayList
 
 # Import the information for the printers that were captured..
 $PrinterList = Import-Csv -Path "$DEMUserShare\IP_PRINTERS.CSV"
 
 # Fill the empty arrays with the data we imported
-$PrinterList.IP | % { $PrinterIPs += $_ }
-$PrinterList.Names | % { $PrinterNames += $_ }
-$PrinterList.Drivers | % {$PrinterDriverNames += $_}
+$PrinterList.IP | % { $PrinterIPs.Add($_) }
+$PrinterList.Names | % { $PrinterNames.Add($_) }
+$PrinterList.Drivers | % {$PrinterDriverNames.Add($_)}
 
 $PrinterNames | % {Write-Output "Detected Printer $_ to be added"}
 

@@ -16,7 +16,7 @@ $modList = 'c:\mods.txt'
 #End configurable options
 #==============================================================================================
 $getPage = Invoke-WebRequest -Uri $WorkshopCollectionURL -UseBasicParsing
-$modIDCollection = @()
+$modIDCollection = New-Object System.Collections.ArrayList
 $links = $getPage.Links
 foreach ($link in $links)
 {
@@ -27,7 +27,7 @@ foreach ($link in $links)
 		{
 			$desc = $link.innerText
 			Write-Host "Found Mod: $desc"
-			$modIDCollection += $modID
+			$modIDCollection.Add($modID)
 		}
 	}
 }

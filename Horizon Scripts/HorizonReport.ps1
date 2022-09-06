@@ -38,29 +38,29 @@ $Descriptions = (Get-HVPool).Base.Description
 $EnabledStatus = (Get-HVPool).DesktopSettings.Enabled
 $DesktopSourceType =  (Get-HVPool).Source
 $DesktopCluster = (Get-HVPool).AutomatedDesktopData.VirtualCenterNamesData.HostorClusterPath
-$ClusterNames = @()
-$PoolDescriptions = @()
-$DesktopType = @()
-$PoolsUserEntitlements = @()
-$PoolsGroupEntitlements = @()
+$ClusterNames = New-Object System.Collections.ArrayList
+$PoolDescriptions = New-Object System.Collections.ArrayList
+$DesktopType = New-Object System.Collections.ArrayList
+$PoolsUserEntitlements = New-Object System.Collections.ArrayList
+$PoolsGroupEntitlements = New-Object System.Collections.ArrayList
 foreach ($Description in $Descriptions) {
-    if($Description -eq $null){$PoolDescriptions += "NONE"}else {$PoolDescriptions += $Description}
+    if($Null -eq $Description){$PoolDescriptions.Add("NONE")}else {$PoolDescriptions.Add($Description)}
 }
 foreach ($Cluster in $DesktopCluster) {
     $Split = $Cluster.split('/')
     $Cluster = $Split[3]
-    $ClusterNames += $Cluster
+    $ClusterNames.add($Cluster)
 }
 foreach ($DesktopSRCType in $DesktopSourceType){
-        if($DesktopSRCType -eq 'INSTANT_CLONE_ENGINE'){$DesktopType += 'Instant Clones'}
-        if($DesktopSRCType -eq 'VIEW_COMPOSER'){$DesktopType += 'Linked Clones'}       
-        if($DesktopSRCType -eq 'VIRTUAL_CENTER'){$DesktopType += 'Static Desktops'}
+        if($DesktopSRCType -eq 'INSTANT_CLONE_ENGINE'){$DesktopType.Add('Instant Clones')}
+        if($DesktopSRCType -eq 'VIEW_COMPOSER'){$DesktopType.Add('Linked Clones')}       
+        if($DesktopSRCType -eq 'VIRTUAL_CENTER'){$DesktopType.Add('Static Desktops'}
     }
 foreach ($Pool in $Pools) {
     [string]$PoolUserEntitlements = (Get-HVEntitlement -Type User -ResourceName $Pool -ResourceType Desktop).base.loginname
     [string]$PoolGroupEntitlements = (Get-HVEntitlement -Type Group -ResourceName $Pool -ResourceType Desktop).base.loginname
-    if($PoolUserEntitlements -eq $null){$PoolsUserEntitlements += "NONE"}else {$PoolsUserEntitlements += $PoolUserEntitlements}
-    if($PoolGroupEntitlements -eq $null){$PoolsGroupEntitlements += "NONE"}else {$PoolsGroupEntitlements += $PoolGroupEntitlements}
+    if($Null -eq $PoolUserEntitlements){$PoolsUserEntitlements.Add("NONE")}else {$PoolsUserEntitlements.Add($PoolUserEntitlements)}
+    if($Null -eq $PoolGroupEntitlements){$PoolsGroupEntitlements.Add("NONE")}else {$PoolsGroupEntitlements.Add($PoolGroupEntitlements)}
 }
 
 ## Initialize Workbook and sheets. Also set names
