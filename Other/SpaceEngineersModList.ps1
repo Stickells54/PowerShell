@@ -11,7 +11,7 @@ cls
 $WorkshopCollectionURL = 'https://steamcommunity.com/sharedfiles/filedetails/?id=2496573352'
 #Set Output Path and Filename of file which will contain MOD ID list
 #Note: List will also display on screen
-$modList = 'c:\mods.txt'
+$modList = 'c:\temp\mods.txt'
 #==============================================================================================
 #End configurable options
 #==============================================================================================
@@ -25,14 +25,15 @@ foreach ($link in $links)
 		$modID = $link.href.Replace('https://steamcommunity.com/sharedfiles/filedetails/?id=', '')
 		if ($modIDCollection -notcontains $modID)
 		{
-			$desc = $link.innerText
-			Write-Host "Found Mod: $desc"
-			$modIDCollection.Add($modID)
+			
+			$null = $modIDCollection.Add($modID)
 		}
 	}
 }
 if (Test-Path $modList) { del $modList }
 Set-Content -Path $modList $modIDCollection
 Write-Host "Your mod list is at: $modList"
-$modIDCollection
+$Count = $modIDCollection.Count
+Write-Host " $count mods detected from collection."
 start $modList
+pause
